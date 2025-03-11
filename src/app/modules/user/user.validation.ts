@@ -17,3 +17,17 @@ export const userValidationSchema = z.object({
       .url({ message: "Profile image must be a valid URL." }),
   }),
 });
+
+export const userUpdateValidationSchema = z.object({
+  body: z.object({
+    name: z
+      .string({ required_error: "Name is required." })
+      .trim()
+      .min(2, { message: "Name must be at least 2 characters long." }),
+    email: z.string().trim().email({ message: "Invalid email format." }),
+    profile_image: z
+      .string({ required_error: "Profile image is required." })
+      .trim()
+      .url({ message: "Profile image must be a valid URL." }),
+  }),
+});

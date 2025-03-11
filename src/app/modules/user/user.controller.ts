@@ -1,6 +1,7 @@
 import config from "../../config";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
+import { IJwtPayload } from "../../utils/token.utils";
 import { UserService } from "./user.service";
 import httpStatus from "http-status";
 
@@ -26,6 +27,28 @@ const registerUser = catchAsync(async (req, res) => {
   });
 });
 
+const getMe = catchAsync(async (req, res) => {
+  const user = await UserService.getMe(req.user as IJwtPayload);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User details fetched successfully!",
+    data: user,
+  });
+});
+
+const updateUser = catchAsync(async (req, res) => {
+  const user = await UserService.updateUser(req.user as IJwtPayload, req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User details updated successfully!",
+    data: user,
+  });
+});
+
 export const UserController = {
   registerUser,
+  getMe,
+  updateUser,
 };
