@@ -5,9 +5,12 @@ const ConversationSchema = new Schema<IConversation>(
   {
     sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
     receiver: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    message: { type: String, required: true },
+    message: { type: Schema.Types.ObjectId, ref: "Message" },
   },
   { timestamps: true }
 );
 
-const Conversation = model<IConversation>("Conversation", ConversationSchema);
+export const Conversation = model<IConversation>(
+  "Conversation",
+  ConversationSchema
+);
