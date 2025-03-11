@@ -2,6 +2,8 @@ import { model, Schema } from "mongoose";
 import { IUser, UserModel } from "./user.interface";
 import config from "../../config";
 import bcrypt from "bcrypt";
+import AppError from "../../errors/appError";
+import httpStatus from "http-status";
 
 const UserSchema = new Schema<IUser>(
   {
@@ -37,13 +39,27 @@ UserSchema.pre("save", async function (next) {
 UserSchema.statics.isUserExistsByEmail = async function (
   email: string
 ): Promise<IUser | null> {
-  return this.findOne({ email });
+  return this.findOne({ email }).select("+password");
 };
 
 UserSchema.statics.isUserExistsById = async function (
   id: string
 ): Promise<IUser | null> {
   return this.findById(id);
+};
+
+UserSchema.statics.isPasswordMatched = async (
+  plainTextPassword: string,
+  hashedPassword: string
+) => {
+  const isPasswordMatched = await bcrypt.compare(
+    plainTextPassword,
+    hashedPassword
+  );
+  if (!isPasswordMatched) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Wrong password");
+  }
+  return isPasswordMatched;
 };
 
 const User = model<IUser, UserModel>("User", UserSchema);
