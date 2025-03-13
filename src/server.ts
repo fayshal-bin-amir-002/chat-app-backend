@@ -5,7 +5,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import handleSocketConnection from "./app/socket";
 
-let io: Server; // Declare io here to export it later
+let io: Server;
 
 async function main() {
   await mongoose.connect(config.database_url as string);

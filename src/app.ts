@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import router from "./app/routes";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
 import notFound from "./app/middleware/notFound";
+import path from "path";
+
 const app: Application = express();
 
 app.use(express.json());
@@ -18,6 +20,11 @@ app.use(
   })
 );
 app.use(cookieParser());
+
+const __dirname1 = path.resolve();
+if (process.env.NODE_ENV === "production") {
+} else {
+}
 
 app.use("/api/v1", router);
 
