@@ -1,8 +1,8 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export interface IMessage extends Document {
-  text: string;
-  image_url: string;
-  video_url: string;
+  sender: Types.ObjectId;
+  receiver: Types.ObjectId;
+  message: string;
   seen: boolean;
 }

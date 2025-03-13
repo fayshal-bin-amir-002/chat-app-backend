@@ -43,11 +43,11 @@ const getMe = async (payload: IJwtPayload) => {
 
 const updateUser = async (
   user: IJwtPayload,
-  payload: Pick<IUser, "name" | "email" | "profile_image">
+  payload: Pick<IUser, "name" | "profile_image">
 ) => {
   const result = await User.findByIdAndUpdate(
     user?.userId,
-    { ...payload },
+    { name: payload?.name, profile_image: payload?.profile_image },
     { new: true }
   );
   if (!result) {
@@ -56,8 +56,53 @@ const updateUser = async (
   return result;
 };
 
+const getAllUser = async (user: IJwtPayload) => {
+  const users = await User.find({
+    _id: { $ne: user?.userId },
+  });
+  return users;
+};
+
+const getAUser = async (id: string) => {
+  const user = await User.findById(id);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found.");
+  }
+  return user;
+};
+
+const findUser = async (user: IJwtPayload, payload: string) => {
+  if (payload === undefined) {
+    const result = await User.find({
+      _id: { $ne: user?.userId },
+    }).limit(5);
+    return result;
+  } else {
+    const result = await User.find({
+      $and: [
+        { _id: { $ne: user?.userId } },
+        {
+          $or: [
+            { name: new RegExp(payload, "i") },
+            { email: new RegExp(payload, "i") },
+          ],
+        },
+      ],
+    });
+
+    if (!result || result.length === 0) {
+      throw new AppError(httpStatus.NOT_FOUND, "No User found.");
+    }
+
+    return result;
+  }
+};
+
 export const UserService = {
   registerUser,
   getMe,
   updateUser,
+  getAllUser,
+  getAUser,
+  findUser,
 };

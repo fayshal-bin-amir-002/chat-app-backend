@@ -3,9 +3,9 @@ import { IMessage } from "./message.interface";
 
 const MessageSchema = new Schema<IMessage>(
   {
-    text: { type: String, required: false, default: "" },
-    image_url: { type: String, required: false, default: "" },
-    video_url: { type: String, required: false, default: "" },
+    message: { type: String, required: false, default: "" },
+    sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    receiver: { type: Schema.Types.ObjectId, ref: "User", required: true },
     seen: { type: Boolean, default: false },
   },
   { timestamps: true }

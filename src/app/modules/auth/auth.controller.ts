@@ -16,7 +16,7 @@ const userLogin = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: "User registration completed successfully!",
+    message: "User logged in successfully!",
     data: {
       accessToken,
       refreshToken,

@@ -47,8 +47,44 @@ const updateUser = catchAsync(async (req, res) => {
   });
 });
 
+const getAllUser = catchAsync(async (req, res) => {
+  const users = await UserService.getAllUser(req.user as IJwtPayload);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All users fetched successfully!",
+    data: users,
+  });
+});
+
+const getAUser = catchAsync(async (req, res) => {
+  const user = await UserService.getAUser(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User details fetched successfully!",
+    data: user,
+  });
+});
+
+const findUser = catchAsync(async (req, res) => {
+  const user = await UserService.findUser(
+    req.user as IJwtPayload,
+    req.query.user as string
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User found successfully!",
+    data: user,
+  });
+});
+
 export const UserController = {
   registerUser,
   getMe,
   updateUser,
+  getAllUser,
+  getAUser,
+  findUser,
 };
