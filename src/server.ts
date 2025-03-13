@@ -14,7 +14,11 @@ async function main() {
   // Initialize Socket.IO
   io = new Server(server, {
     cors: {
-      origin: ["http://localhost:5173", "http://localhost:5174"],
+      origin: [
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "https://simple-chat-app-socketio.vercel.app",
+      ],
       credentials: true,
     },
   });
