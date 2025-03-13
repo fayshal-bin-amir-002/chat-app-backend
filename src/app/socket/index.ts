@@ -89,6 +89,25 @@ const handleSocketConnection = async (io: Server) => {
       );
     });
 
+    //delete conversation
+    socket.on("delete-conversation", async (id1, id2) => {
+      await MessageService.deleteConversation(id1, id2);
+
+      const sidebarConversationSender =
+        await MessageService.getSidebarConversation(id1);
+      const sidebarConversationReceiver =
+        await MessageService.getSidebarConversation(id2);
+
+      io.to(id1?.toString()).emit(
+        "sidebar-conversation",
+        sidebarConversationSender
+      );
+      io.to(id2?.toString()).emit(
+        "sidebar-conversation",
+        sidebarConversationReceiver
+      );
+    });
+
     socket.on("disconnect", async () => {
       onlineUsers.delete(user?.userId?.toString());
       io.emit("onlineUsers", Array.from(onlineUsers));

@@ -71,6 +71,20 @@ const getSidebarConversation = async (currentUserId: string) => {
   return sidebarConversation;
 };
 
+const deleteConversation = async (id1: string, id2: string) => {
+  await Message.deleteMany({
+    $or: [
+      {
+        $and: [{ sender: new ObjectId(id1) }, { receiver: new ObjectId(id2) }],
+      },
+      {
+        $and: [{ sender: new ObjectId(id2) }, { receiver: new ObjectId(id1) }],
+      },
+    ],
+  });
+};
+
 export const MessageService = {
   getSidebarConversation,
+  deleteConversation,
 };
