@@ -32,7 +32,10 @@ const handleSocketConnection = async (io: Server) => {
         ],
       }).sort({ updatedAt: -1 });
 
-      socket.emit("conversation", conversationMessages);
+      io.to(user?.userId?.toString()).emit(
+        "conversation",
+        conversationMessages
+      );
     });
 
     // new message
@@ -46,6 +49,7 @@ const handleSocketConnection = async (io: Server) => {
 
       io.to(data?.sender?.toString()).emit("message", message);
       io.to(data?.receiver?.toString()).emit("message", message);
+
       io.to(data?.sender?.toString()).emit(
         "sidebar-conversation",
         sidebarConversationSender
@@ -92,6 +96,16 @@ const handleSocketConnection = async (io: Server) => {
     //delete conversation
     socket.on("delete-conversation", async (id1, id2) => {
       await MessageService.deleteConversation(id1, id2);
+
+      const conversationMessages = await Message.find({
+        $or: [
+          { sender: id1, receiver: id2 },
+          { sender: id2, receiver: id1 },
+        ],
+      }).sort({ updatedAt: -1 });
+
+      io.to(id1?.toString()).emit("conversation", conversationMessages);
+      io.to(id2?.toString()).emit("conversation", conversationMessages);
 
       const sidebarConversationSender =
         await MessageService.getSidebarConversation(id1);
